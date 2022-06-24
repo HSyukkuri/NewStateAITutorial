@@ -28,13 +28,20 @@ public class PlayerController : MonoBehaviour
     }
 
     NavMeshAgent navMeshAgent;
+    Animator animator;
 
     private void Start() {
         navMeshAgent = GetComponent<NavMeshAgent>();
+        animator = GetComponent<Animator>();
     }
 
     private void Update() {
         stateTime += Time.deltaTime;
+
+        float speed = navMeshAgent.velocity.magnitude;
+
+        animator.SetFloat("PlayerSpeed", speed);
+
 
         switch (currentState) {
 
