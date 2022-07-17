@@ -33,6 +33,7 @@ public class PlayerController : MonoBehaviour
     private void Start() {
         navMeshAgent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void Update() {
