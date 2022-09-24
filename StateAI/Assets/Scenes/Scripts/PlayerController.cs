@@ -27,6 +27,8 @@ public class PlayerController : MonoBehaviour
     bool stateEnter = false;
     float stateTime = 0f;
 
+
+
     enum Desire {
         Toilet,
         Eat,
@@ -41,6 +43,17 @@ public class PlayerController : MonoBehaviour
         stateEnter = true;
         stateTime = 0f;
         Debug.Log(currentState.ToString());
+    }
+
+    enum Anim_State {
+        Stand = 0,
+        Eating = 1,
+        Toilet = 2,
+        Sleep = 3,
+    }
+
+    void ChangeAnimState(Anim_State state) {
+        animator.SetInteger("ID", (int)state);
     }
 
     NavMeshAgent navMeshAgent;
@@ -122,7 +135,7 @@ public class PlayerController : MonoBehaviour
                             targetState = State.DoNothing;
                         }
 
-
+                        ChangeAnimState(Anim_State.Stand);
                     }
 
                     //–Ú“I’n‚É‚½‚Ç‚è’…‚¢‚½
@@ -150,10 +163,14 @@ public class PlayerController : MonoBehaviour
 
             case State.Eating: {
                     if (stateEnter) {
-
+                        navMeshAgent.enabled = false;
+                        ChangeAnimState(Anim_State.Eating);
+                        transform.position = point_Table.position;
+                        transform.rotation = point_Table.rotation;
                     }
 
                     if(stateTime >= 3f) {
+                        navMeshAgent.enabled = true;
                         desireDictionary[Desire.Eat] = 0f;
                         ChangeState(State.MoveToDestination);
                     }
@@ -163,23 +180,31 @@ public class PlayerController : MonoBehaviour
 
             case State.Sleeping: {
                     if (stateEnter) {
+                        navMeshAgent.enabled = false;
+                        ChangeAnimState(Anim_State.Sleep);
+                        transform.position = point_Bed.position;
+                        transform.rotation = point_Bed.rotation;
+                    }
 
+                    if (stateTime >= 5f) {
+                        navMeshAgent.enabled = true;
+                        desireDictionary[Desire.Sleep] = 0f;
+                        ChangeState(State.MoveToDestination);
+                    }
+
+                    return;
                 }
-
-                if (stateTime >= 5f) {
-                    desireDictionary[Desire.Sleep] = 0f;
-                    ChangeState(State.MoveToDestination);
-                }
-
-                return;
-            }
 
             case State.SitOnToilet: {
                     if (stateEnter) {
-
+                        navMeshAgent.enabled = false;
+                        ChangeAnimState(Anim_State.Toilet);
+                        transform.position = point_Toilet.position;
+                        transform.rotation = point_Toilet.rotation;
                     }
 
                     if (stateTime >= 3f) {
+                        navMeshAgent.enabled = true;
                         desireDictionary[Desire.Toilet] = 0f;
                         ChangeState(State.MoveToDestination);
                     }
